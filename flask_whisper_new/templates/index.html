@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+  <!-- 左側：任務列表 -->
+  <div class="col-md-3 mb-3">
+    <h5>已保存任務</h5>
+    <ul class="list-group" id="taskList">
+      <!-- JS 動態載入 -->
+    </ul>
+  </div>
+
+  <!-- 右側：翻譯介面 -->
+  <div class="col-md-9">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">語言設定</h5>
+        <div class="row g-2 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">來源語言</label>
+            <select id="src_lang" class="form-select">
+              <option value="auto">自動偵測</option>
+              <option value="en">English</option>
+              <option value="zh-CN">中文（簡體）</option>
+              <option value="zh-TW">中文（繁體）</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">目標語言</label>
+            <select id="tgt_lang" class="form-select">
+              <option value="zh-TW">中文（繁體）</option>
+              <option value="zh-CN">中文（簡體）</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="col-md-4 d-grid">
+            <button class="btn btn-secondary" onclick="swapLang()">↔ 交換語言</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 錄音控制區 -->
+    <div class="card mb-3">
+     <div class="card-body">
+      <h5 class="card-title">錄音控制</h5>
+      <div class="d-flex align-items-center gap-2 mb-2">
+       <button id="btnStart" class="btn btn-success" onclick="startRecording()">開始錄音</button>
+       <button id="btnPause" class="btn btn-warning" onclick="togglePause()" disabled>暫停</button>
+       <button id="btnStop" class="btn btn-danger" onclick="stopRecording()" disabled>停止</button>
+       <span class="ms-3">錄音時間：<span id="timerDisplay">00:00</span></span>
+      </div>
+     </div>
+    </div>
+
+
+    <!-- 字幕區 -->
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">字幕</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <h6>來源文字</h6>
+            <div id="raw_output" class="subtitle-box"></div>
+          </div>
+          <div class="col-md-6">
+            <h6>翻譯結果</h6>
+            <div id="translated_output" class="subtitle-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 歷史任務查看區 -->
+    <div class="card mt-3 d-none" id="taskDetailCard">
+      <div class="card-body">
+        <h5 class="card-title" id="taskDetailTitle">任務詳細</h5>
+        <p class="text-muted" id="taskDetailMeta"></p>
+        <audio id="taskAudio" controls class="mb-2"></audio>
+        <div class="row">
+          <div class="col-md-6">
+            <h6>原始文字</h6>
+            <pre id="taskDetailOriginal" class="subtitle-box"></pre>
+          </div>
+          <div class="col-md-6">
+            <h6>翻譯文字</h6>
+            <pre id="taskDetailTranslated" class="subtitle-box"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal：停止後是否保存 -->
+<div class="modal-backdrop-custom" id="stopModal">
+  <div class="modal-custom">
+    <p>是否保存？</p>
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary btn-sm" onclick="closeStopModal()">取消</button>
+      <button class="btn btn-outline-danger btn-sm" onclick="openDiscardConfirm()">放棄</button>
+      <button class="btn btn-primary btn-sm" onclick="openSaveNameModal()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal：二次確認放棄 -->
+<div class="modal-backdrop-custom" id="discardModal">
+  <div class="modal-custom">
+    <p>按下確認後將不會保存。</p>
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary btn-sm" onclick="closeDiscardModal()">不確認</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDiscard()">確認</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal：輸入檔案名稱 -->
+<div class="modal-backdrop-custom" id="saveNameModal">
+  <div class="modal-custom">
+    <p>檔案名稱：</p>
+    <input type="text" id="saveNameInput" class="form-control mb-2" placeholder="若空白將自動命名">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary btn-sm" onclick="confirmSave()">確認</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
