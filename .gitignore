@@ -1,6 +1,13 @@
+# Python / env
 venv/
 __pycache__/
 *.pyc
+
+# runtime data (do not commit)
 sessions/
 tasks/
 uploads/
+
+# OS / IDE / editor
+.vscode/
+.DS_Store
